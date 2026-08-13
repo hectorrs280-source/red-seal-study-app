@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "block": "Máquinas Eléctricas",
+    "title_en": "Induction Motors",
+    "title_es": "Motores de inducción",
+    "topics_en": [
+      "Operating principle: rotating magnetic field",
+      "Slip and torque-speed characteristics",
+      "Squirrel cage vs wound rotor",
+      "Starting methods: DOL, star-delta, soft starter, VFD",
+      "Motor protection: overload, short circuit, ground fault"
+    ],
+    "topics_es": [
+      "Principio de funcionamiento: campo magnético rotatorio",
+      "Deslizamiento y curva par-velocidad",
+      "Rotor jaula de ardilla vs rotor bobinado",
+      "Métodos de arranque: directo, estrella-delta, arrancador suave, variador de frecuencia",
+      "Protección del motor: sobrecarga, cortocircuito, falla a tierra"
+    ],
+    "term_ids": [3]
+  }
+]

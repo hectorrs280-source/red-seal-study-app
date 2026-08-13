@@ -1,0 +1,53 @@
+[
+  {
+    "id": 1,
+    "block": "Controles",
+    "question_en": "An industrial electrician is troubleshooting a three-phase motor that trips its overload relay after running for 10 minutes. The motor nameplate current is 10 A. The overload relay is set to 12 A. Which of the following is the most likely cause?",
+    "options": [
+      "A) The motor windings are shorted to ground.",
+      "B) The motor is single-phasing.",
+      "C) The motor is overloaded mechanically.",
+      "D) The overload relay is set too low."
+    ],
+    "correct": 2,
+    "explanation_en": "A gradual trip after 10 minutes indicates mechanical overload. A ground fault would trip the breaker instantly. Single-phasing usually trips within seconds. 12 A is a reasonable setting (120% of FLA), so it is not too low.",
+    "explanation_es": "Un disparo gradual después de 10 minutos indica sobrecarga mecánica. Una falla a tierra dispararía el breaker instantáneamente. La pérdida de fase normalmente dispara en pocos segundos. 12 A es un ajuste razonable (120% de la corriente nominal), por lo que no está demasiado bajo.",
+    "follow_up": "Explain why single-phasing causes faster tripping than mechanical overload.",
+    "follow_up_answer": "Single-phasing causes a large current imbalance quickly, with one phase carrying excessive current, leading to rapid heating of the overload relay. Mechanical overload develops gradually as the load increases.",
+    "difficulty": "medium"
+  },
+  {
+    "id": 2,
+    "block": "Código Eléctrico",
+    "question_en": "According to the Canadian Electrical Code, what is the minimum size of copper conductor required for a 100 A circuit at 75°C in a raceway with 4 current-carrying conductors?",
+    "options": [
+      "A) #4 AWG",
+      "B) #3 AWG",
+      "C) #2 AWG",
+      "D) #1 AWG"
+    ],
+    "correct": 3,
+    "explanation_en": "With 4 current-carrying conductors, you must derate to 80%. #3 AWG at 75°C is rated 100 A, but derated to 80% gives 80 A, insufficient. #2 AWG at 75°C is rated 115 A, derated to 92 A, still under 100 A. #1 AWG at 75°C is rated 130 A, derated to 104 A, sufficient.",
+    "explanation_es": "Con 4 conductores activos, debes aplicar factor de corrección del 80%. #3 AWG a 75°C soporta 100 A, pero al 80% da 80 A, insuficiente. #2 AWG a 75°C soporta 115 A, al 80% da 92 A, aún por debajo de 100 A. #1 AWG a 75°C soporta 130 A, al 80% da 104 A, suficiente.",
+    "follow_up": "What table in the CEC would you use to find the base ampacity of conductors?",
+    "follow_up_answer": "Table 2 (for copper conductors in raceway) or Table 4 (for cable). You also need Table 5C for correction factors for more than 3 conductors.",
+    "difficulty": "hard"
+  },
+  {
+    "id": 3,
+    "block": "Seguridad",
+    "question_en": "Before performing maintenance on a 600 V motor control center, the electrician must verify the absence of voltage. What is the correct sequence according to CSA Z462?",
+    "options": [
+      "A) Test the voltmeter on a known source, test the equipment, test the voltmeter again.",
+      "B) Test the equipment with a voltmeter, then lockout the disconnect.",
+      "C) Open the disconnect, lock it out, then test the equipment.",
+      "D) Turn off the breaker and wait 5 minutes before testing."
+    ],
+    "correct": 0,
+    "explanation_en": "CSA Z462 requires a 'live-dead-live' check: verify the meter works on a known live source, test the de-energized equipment, then verify the meter again to ensure it still works.",
+    "explanation_es": "CSA Z462 exige una verificación 'vivo-muerto-vivo': comprobar que el multímetro funciona en una fuente viva conocida, probar el equipo desenergizado y volver a verificar el multímetro para asegurar que sigue funcionando.",
+    "follow_up": "Why is it important to re-test the voltmeter after measuring the equipment?",
+    "follow_up_answer": "To ensure the meter did not fail during the measurement, which could give a false 'no voltage' reading and create a serious safety hazard.",
+    "difficulty": "medium"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "term_en": "Overcurrent protection device",
+    "term_es": "Dispositivo de protección contra sobrecorriente",
+    "pronunciation": "/ˌoʊvərˈkɜːrənt prəˈtɛkʃən dɪˈvaɪs/",
+    "example_en": "The circuit breaker is an overcurrent protection device that opens automatically during a fault.",
+    "example_es": "El interruptor termomagnético es un dispositivo de protección contra sobrecorriente que se abre automáticamente durante una falla.",
+    "category": "Seguridad"
+  },
+  {
+    "id": 2,
+    "term_en": "Conduit",
+    "term_es": "Tubería / conducto",
+    "pronunciation": "/ˈkɑːnduɪt/",
+    "example_en": "Run the conductors through a rigid metal conduit.",
+    "example_es": "Pasa los conductores a través de una tubería metálica rígida.",
+    "category": "Instalación"
+  },
+  {
+    "id": 3,
+    "term_en": "Overload relay",
+    "term_es": "Relé de sobrecarga",
+    "pronunciation": "/ˈoʊvərˌloʊd ˈriːleɪ/",
+    "example_en": "The overload relay protects the motor from sustained overcurrent.",
+    "example_es": "El relé de sobrecarga protege al motor de sobrecorriente sostenida.",
+    "category": "Controles"
+  },
+  {
+    "id": 4,
+    "term_en": "Grounding electrode",
+    "term_es": "Electrodo de puesta a tierra",
+    "pronunciation": "/ˈɡraʊndɪŋ ɪˈlɛkˌtroʊd/",
+    "example_en": "The grounding electrode must be buried below the frost line.",
+    "example_es": "El electrodo de puesta a tierra debe enterrarse por debajo de la línea de congelación.",
+    "category": "Distribución"
+  },
+  {
+    "id": 5,
+    "term_en": "Lockout/tagout",
+    "term_es": "Bloqueo y etiquetado",
+    "pronunciation": "/ˈlɑːkaʊt ˈtæɡaʊt/",
+    "example_en": "Always follow lockout/tagout procedures before servicing equipment.",
+    "example_es": "Sigue siempre los procedimientos de bloqueo y etiquetado antes de dar servicio al equipo.",
+    "category": "Seguridad"
+  }
+]
