@@ -53,3 +53,12 @@ Open `http://localhost:8080`.
 ## GitHub Pages
 
 Deploy from `main` → `/ (root)` in **Settings → Pages**.
+
+## V2.2 guided study engine
+- First-use local user creation and always-visible user switch/create control.
+- Each user keeps a separate 180-day calendar, vocabulary state, quiz history, Task/Sub-task diagnostics and mock history.
+- Daily completion is automatic: vocabulary review + objective English evaluation (>=80%) + RSOS lesson + guided question target.
+- Guided questions prioritize the Task of the day, then missed questions and measured weak Tasks.
+- RSOS-map classification drills are separated from exam-style practice so they do not dominate preparation.
+- Full mock excludes map-only drills and preserves the official Task question counts while using a global cognitive mix within Red Seal's published ranges.
+- Unfinished quiz sessions are stored for the active local user and can be resumed.
