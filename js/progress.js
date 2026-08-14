@@ -55,6 +55,7 @@
     progress.quiz.byBlock[block].answered += 1;
     if (isCorrect) progress.quiz.byBlock[block].correct += 1;
 
+    // Conserva un historial compacto de respuestas para revisar el progreso sin servidor.
     progress.quiz.history.push({
       questionId: detail.questionId ?? null,
       block,
@@ -100,6 +101,7 @@
     const cursor = new Date();
     let streak = 0;
 
+    // Si hoy aún no hubo actividad, permitimos que la racha continúe desde ayer.
     if (!set.has(todayKey(cursor))) cursor.setDate(cursor.getDate() - 1);
     while (set.has(todayKey(cursor))) {
       streak += 1;
