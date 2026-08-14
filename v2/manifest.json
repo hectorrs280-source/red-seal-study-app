@@ -1,0 +1,14 @@
+{
+  "name": "Red Seal Industrial Electrician Study App",
+  "short_name": "Red Seal Study",
+  "description": "RSOS-aligned study plan, technical English and exam practice for Industrial Electrician Red Seal.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#071016",
+  "theme_color": "#071016",
+  "lang": "en-CA",
+  "icons": [
+    {"src":"assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
