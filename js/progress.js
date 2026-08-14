@@ -1,24 +1,137 @@
-/* Persistencia separada por perfil local. */
+/* Gestión de estadísticas y persistencia de progreso. */
 (function () {
   'use strict';
-  const DAY = 86400000;
-  function defaults() { return { quiz: { answered: 0, correct: 0, byMwa: {}, byTask: {}, history: [], examAttempts: [] }, vocabulary: {}, vocabTests: [], calendar: { completedDays: [] }, settings: { showSpanish: true, englishNewPerDay: 5, dailyQuizTarget: 10 }, activityDates: [], lastUpdated: null }; }
-  function key() { return window.ProfileStore.progressKey(); }
-  function load() { const k=key(); if(!k)return defaults(); try { const p=JSON.parse(localStorage.getItem(k)); if(!p)return defaults(); const d=defaults(); return {...d,...p,quiz:{...d.quiz,...(p.quiz||{}),byMwa:{...(p.quiz?.byMwa||{})},byTask:{...(p.quiz?.byTask||{})},history:[...(p.quiz?.history||[])],examAttempts:[...(p.quiz?.examAttempts||[])]},vocabulary:{...(p.vocabulary||{})},vocabTests:[...(p.vocabTests||[])],calendar:{...d.calendar,...(p.calendar||{}),completedDays:[...(p.calendar?.completedDays||[])]},settings:{...d.settings,...(p.settings||{})},activityDates:[...(p.activityDates||[])]}; } catch(_){ return defaults(); } }
-  function save(p){const k=key();if(!k)return;p.lastUpdated=new Date().toISOString();localStorage.setItem(k,JSON.stringify(p));}
-  function dateKey(d=new Date()){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`;}
-  function touch(p){const k=dateKey();if(!p.activityDates.includes(k))p.activityDates.push(k);p.activityDates=p.activityDates.sort().slice(-365);}
-  function inc(bucket,id,correct){bucket[id]||={answered:0,correct:0};bucket[id].answered++;if(correct)bucket[id].correct++;}
-  function recordQuizAnswer(q,correct,detail={}){const p=load();p.quiz.answered++;if(correct)p.quiz.correct++;inc(p.quiz.byMwa,q.mwa,correct);inc(p.quiz.byTask,q.task,correct);p.quiz.history.push({questionId:q.id,mwa:q.mwa,task:q.task,subtask:q.subtask,questionType:q.question_type,correct,selectedIndex:detail.selectedIndex,correctIndex:q.correct,mode:detail.mode||'practice',at:new Date().toISOString()});p.quiz.history=p.quiz.history.slice(-1500);touch(p);save(p);return p;}
-  function recordExamAttempt(result){const p=load();p.quiz.examAttempts.push({...result,at:new Date().toISOString()});p.quiz.examAttempts=p.quiz.examAttempts.slice(-30);touch(p);save(p);}
-  function getVocab(id){return load().vocabulary[String(id)]||null;}
-  function updateVocab(id,state){const p=load();p.vocabulary[String(id)]=state;touch(p);save(p);return p;}
-  function recordVocabTest(score,total,termIds){const p=load();p.vocabTests.push({score,total,termIds,at:new Date().toISOString()});p.vocabTests=p.vocabTests.slice(-180);touch(p);save(p);}
-  function markDay(dayIndex,done=true){const p=load(),id=Number(dayIndex),set=new Set(p.calendar.completedDays);done?set.add(id):set.delete(id);p.calendar.completedDays=[...set].sort((a,b)=>a-b);touch(p);save(p);}
-  function setSetting(name,value){const p=load();p.settings[name]=value;save(p);}
-  function getSetting(name,fallback){const p=load();return Object.hasOwn(p.settings,name)?p.settings[name]:fallback;}
-  function streak(dates){const s=new Set(dates);let d=new Date(),n=0;if(!s.has(dateKey(d)))d=new Date(d.getTime()-DAY);while(s.has(dateKey(d))){n++;d=new Date(d.getTime()-DAY);}return n;}
-  function weakTasks(limit=5){const p=load();return Object.entries(p.quiz.byTask).filter(([,v])=>v.answered>=3).map(([task,v])=>({task,answered:v.answered,pct:Math.round(v.correct/v.answered*100)})).sort((a,b)=>a.pct-b.pct||b.answered-a.answered).slice(0,limit);}
-  function stats(){const p=load(),mastered=Object.values(p.vocabulary).filter(v=>v.repetitions>=3&&v.easeFactor>=2.3).length;return {...p,mastered,streak:streak(p.activityDates),weakTasks:weakTasks(6)};}
-  window.ProgressStore={load,save,recordQuizAnswer,recordExamAttempt,getVocab,updateVocab,recordVocabTest,markDay,setSetting,getSetting,stats,weakTasks};
+
+  const KEY = 'redSealStudyProgressV1';
+
+  function defaultProgress() {
+    return {
+      quiz: { answered: 0, correct: 0, byBlock: {}, history: [] },
+      flashcards: {},
+      settings: { flashcardCategory: 'Todas', quizBlock: 'Todos' },
+      activityDates: [],
+      lastUpdated: null
+    };
+  }
+
+  function load() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(KEY));
+      if (!parsed || typeof parsed !== 'object') return defaultProgress();
+      const defaults = defaultProgress();
+      return {
+        ...defaults,
+        ...parsed,
+        quiz: { ...defaults.quiz, ...(parsed.quiz || {}), byBlock: { ...(parsed.quiz?.byBlock || {}) }, history: [...(parsed.quiz?.history || [])] },
+        flashcards: { ...(parsed.flashcards || {}) },
+        settings: { ...defaults.settings, ...(parsed.settings || {}) },
+        activityDates: [...(parsed.activityDates || [])]
+      };
+    } catch (_) {
+      return defaultProgress();
+    }
+  }
+
+  function save(progress) {
+    progress.lastUpdated = new Date().toISOString();
+    localStorage.setItem(KEY, JSON.stringify(progress));
+  }
+
+  function todayKey(date = new Date()) {
+    return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+  }
+
+  function touchActivity(progress) {
+    const today = todayKey();
+    if (!progress.activityDates.includes(today)) progress.activityDates.push(today);
+    progress.activityDates = progress.activityDates.sort().slice(-180);
+  }
+
+  function recordQuizAnswer(block, isCorrect, detail = {}) {
+    const progress = load();
+    progress.quiz.answered += 1;
+    if (isCorrect) progress.quiz.correct += 1;
+    if (!progress.quiz.byBlock[block]) progress.quiz.byBlock[block] = { answered: 0, correct: 0 };
+    progress.quiz.byBlock[block].answered += 1;
+    if (isCorrect) progress.quiz.byBlock[block].correct += 1;
+
+    progress.quiz.history.push({
+      questionId: detail.questionId ?? null,
+      block,
+      selectedIndex: detail.selectedIndex ?? null,
+      correctIndex: detail.correctIndex ?? null,
+      isCorrect,
+      answeredAt: new Date().toISOString()
+    });
+    progress.quiz.history = progress.quiz.history.slice(-500);
+
+    touchActivity(progress);
+    save(progress);
+    return progress;
+  }
+
+  function setSetting(name, value) {
+    const progress = load();
+    progress.settings[name] = value;
+    save(progress);
+  }
+
+  function getSetting(name, fallback = null) {
+    const progress = load();
+    return Object.prototype.hasOwnProperty.call(progress.settings, name) ? progress.settings[name] : fallback;
+  }
+
+  function updateFlashcard(termId, state) {
+    const progress = load();
+    progress.flashcards[String(termId)] = state;
+    touchActivity(progress);
+    save(progress);
+    return progress;
+  }
+
+  function getFlashcard(termId) {
+    const progress = load();
+    return progress.flashcards[String(termId)] || null;
+  }
+
+  function calculateStreak(activityDates) {
+    if (!activityDates.length) return 0;
+    const set = new Set(activityDates);
+    const cursor = new Date();
+    let streak = 0;
+
+    if (!set.has(todayKey(cursor))) cursor.setDate(cursor.getDate() - 1);
+    while (set.has(todayKey(cursor))) {
+      streak += 1;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return streak;
+  }
+
+  function getStats() {
+    const progress = load();
+    const mastered = Object.values(progress.flashcards).filter((item) => item && item.repetitions >= 3 && item.easeFactor >= 2.3).length;
+    return {
+      ...progress,
+      mastered,
+      streak: calculateStreak(progress.activityDates)
+    };
+  }
+
+  function reset() {
+    localStorage.removeItem(KEY);
+    return defaultProgress();
+  }
+
+  window.ProgressStore = {
+    load,
+    save,
+    recordQuizAnswer,
+    updateFlashcard,
+    getFlashcard,
+    getStats,
+    setSetting,
+    getSetting,
+    reset
+  };
 })();
