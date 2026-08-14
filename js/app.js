@@ -1,185 +1,28 @@
-/* Punto de entrada de la aplicación. Sin frameworks ni dependencias externas. */
-(function () {
-  'use strict';
-
-  const FALLBACK = {
-    terms: [
-      { id: 1, term_en: 'Overcurrent protection device', term_es: 'Dispositivo de protección contra sobrecorriente', pronunciation: '/ˌoʊvərˈkɜːrənt prəˈtɛkʃən dɪˈvaɪs/', example_en: 'The circuit breaker is an overcurrent protection device that opens automatically during a fault.', example_es: 'El interruptor termomagnético es un dispositivo de protección contra sobrecorriente que se abre automáticamente durante una falla.', category: 'Seguridad' },
-      { id: 2, term_en: 'Conduit', term_es: 'Tubería / conducto', pronunciation: '/ˈkɑːnduɪt/', example_en: 'Run the conductors through a rigid metal conduit.', example_es: 'Pasa los conductores a través de una tubería metálica rígida.', category: 'Instalación' },
-      { id: 3, term_en: 'Overload relay', term_es: 'Relé de sobrecarga', pronunciation: '/ˈoʊvərˌloʊd ˈriːleɪ/', example_en: 'The overload relay protects the motor from sustained overcurrent.', example_es: 'El relé de sobrecarga protege al motor de sobrecorriente sostenida.', category: 'Controles' },
-      { id: 4, term_en: 'Grounding electrode', term_es: 'Electrodo de puesta a tierra', pronunciation: '/ˈɡraʊndɪŋ ɪˈlɛkˌtroʊd/', example_en: 'The grounding electrode must be buried below the frost line.', example_es: 'El electrodo de puesta a tierra debe enterrarse por debajo de la línea de congelación.', category: 'Distribución' },
-      { id: 5, term_en: 'Lockout/tagout', term_es: 'Bloqueo y etiquetado', pronunciation: '/ˈlɑːkaʊt ˈtæɡaʊt/', example_en: 'Always follow lockout/tagout procedures before servicing equipment.', example_es: 'Sigue siempre los procedimientos de bloqueo y etiquetado antes de dar servicio al equipo.', category: 'Seguridad' }
-    ],
-    questions: [
-      { id: 1, block: 'Controles', question_en: 'An industrial electrician is troubleshooting a three-phase motor that trips its overload relay after running for 10 minutes. The motor nameplate current is 10 A. The overload relay is set to 12 A. Which of the following is the most likely cause?', options: ['A) The motor windings are shorted to ground.', 'B) The motor is single-phasing.', 'C) The motor is overloaded mechanically.', 'D) The overload relay is set too low.'], correct: 2, explanation_en: 'A gradual trip after 10 minutes indicates mechanical overload. A ground fault would trip the breaker instantly. Single-phasing usually trips within seconds. 12 A is a reasonable setting (120% of FLA), so it is not too low.', explanation_es: 'Un disparo gradual después de 10 minutos indica sobrecarga mecánica. Una falla a tierra dispararía el breaker instantáneamente. La pérdida de fase normalmente dispara en pocos segundos. 12 A es un ajuste razonable (120% de la corriente nominal), por lo que no está demasiado bajo.', follow_up: 'Explain why single-phasing causes faster tripping than mechanical overload.', follow_up_answer: 'Single-phasing causes a large current imbalance quickly, with one phase carrying excessive current, leading to rapid heating of the overload relay. Mechanical overload develops gradually as the load increases.', difficulty: 'medium' },
-      { id: 2, block: 'Código Eléctrico', question_en: 'According to the Canadian Electrical Code, what is the minimum size of copper conductor required for a 100 A circuit at 75°C in a raceway with 4 current-carrying conductors?', options: ['A) #4 AWG', 'B) #3 AWG', 'C) #2 AWG', 'D) #1 AWG'], correct: 3, explanation_en: 'With 4 current-carrying conductors, you must derate to 80%. #3 AWG at 75°C is rated 100 A, but derated to 80% gives 80 A, insufficient. #2 AWG at 75°C is rated 115 A, derated to 92 A, still under 100 A. #1 AWG at 75°C is rated 130 A, derated to 104 A, sufficient.', explanation_es: 'Con 4 conductores activos, debes aplicar factor de corrección del 80%. #3 AWG a 75°C soporta 100 A, pero al 80% da 80 A, insuficiente. #2 AWG a 75°C soporta 115 A, al 80% da 92 A, aún por debajo de 100 A. #1 AWG a 75°C soporta 130 A, al 80% da 104 A, suficiente.', follow_up: 'What table in the CEC would you use to find the base ampacity of conductors?', follow_up_answer: 'Table 2 (for copper conductors in raceway) or Table 4 (for cable). You also need Table 5C for correction factors for more than 3 conductors.', difficulty: 'hard' },
-      { id: 3, block: 'Seguridad', question_en: 'Before performing maintenance on a 600 V motor control center, the electrician must verify the absence of voltage. What is the correct sequence according to CSA Z462?', options: ['A) Test the voltmeter on a known source, test the equipment, test the voltmeter again.', 'B) Test the equipment with a voltmeter, then lockout the disconnect.', 'C) Open the disconnect, lock it out, then test the equipment.', 'D) Turn off the breaker and wait 5 minutes before testing.'], correct: 0, explanation_en: "CSA Z462 requires a 'live-dead-live' check: verify the meter works on a known live source, test the de-energized equipment, then verify the meter again to ensure it still works.", explanation_es: "CSA Z462 exige una verificación 'vivo-muerto-vivo': comprobar que el multímetro funciona en una fuente viva conocida, probar el equipo desenergizado y volver a verificar el multímetro para asegurar que sigue funcionando.", follow_up: 'Why is it important to re-test the voltmeter after measuring the equipment?', follow_up_answer: "To ensure the meter did not fail during the measurement, which could give a false 'no voltage' reading and create a serious safety hazard.", difficulty: 'medium' }
-    ],
-    guides: [
-      { id: 1, block: 'Máquinas Eléctricas', title_en: 'Induction Motors', title_es: 'Motores de inducción', topics_en: ['Operating principle: rotating magnetic field', 'Slip and torque-speed characteristics', 'Squirrel cage vs wound rotor', 'Starting methods: DOL, star-delta, soft starter, VFD', 'Motor protection: overload, short circuit, ground fault'], topics_es: ['Principio de funcionamiento: campo magnético rotatorio', 'Deslizamiento y curva par-velocidad', 'Rotor jaula de ardilla vs rotor bobinado', 'Métodos de arranque: directo, estrella-delta, arrancador suave, variador de frecuencia', 'Protección del motor: sobrecarga, cortocircuito, falla a tierra'], term_ids: [3] }
-    ]
-  };
-
-  const app = {
-    data: FALLBACK,
-    flashcards: null,
-    quiz: null,
-    activeTab: 'home'
-  };
-
-  async function loadJson(path, fallback) {
-    if (location.protocol === 'file:') return fallback;
-    try {
-      const response = await fetch(path, { cache: 'no-store' });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return await response.json();
-    } catch (error) {
-      console.warn(`No se pudo cargar ${path}; usando respaldo local.`, error);
-      return fallback;
-    }
-  }
-
-  async function init() {
-    const [terms, questions, guides] = await Promise.all([
-      loadJson('data/terms.json', FALLBACK.terms),
-      loadJson('data/questions.json', FALLBACK.questions),
-      loadJson('data/study_guides.json', FALLBACK.guides)
-    ]);
-    app.data = { terms, questions, guides };
-    bindNavigation();
-    renderHome();
-    renderGuides();
-    renderProgress();
-    app.flashcards = new window.FlashcardsController(document.querySelector('#flashcards-root'), terms, renderProgress);
-    app.quiz = new window.QuizController(document.querySelector('#quiz-root'), questions, renderProgress);
-    registerServiceWorker();
-  }
-
-  function bindNavigation() {
-    document.querySelectorAll('[data-tab]').forEach((button) => {
-      button.addEventListener('click', () => activateTab(button.dataset.tab));
-    });
-
-  }
-
-  function activateTab(tab) {
-    app.activeTab = tab;
-    document.querySelectorAll('[data-tab]').forEach((button) => button.classList.toggle('active', button.dataset.tab === tab));
-    document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.toggle('active', panel.id === `tab-${tab}`));
-    if (tab === 'progress') renderProgress();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function renderHome() {
-    const root = document.querySelector('#home-root');
-    root.innerHTML = `
-      <section class="hero">
-        <div>
-          <p class="eyebrow">RED SEAL · INDUSTRIAL ELECTRICIAN</p>
-          <h1>Aprende el concepto.<br><span>Domina el inglés técnico.</span></h1>
-          <p class="hero-copy">Preparación bilingüe para practicar vocabulario, razonamiento técnico y preguntas tipo examen sin depender de memorización mecánica.</p>
-          <div class="hero-actions">
-            <button class="button primary" data-go="quiz">Practicar quiz</button>
-            <button class="button secondary" data-go="flashcards">Estudiar vocabulario</button>
-          </div>
-        </div>
-        <div class="hero-panel" aria-label="Resumen de funciones">
-          <div class="electric-mark">⚡</div>
-          <strong>Study loop</strong>
-          <ol>
-            <li>Lee en inglés.</li>
-            <li>Razona el diagnóstico.</li>
-            <li>Comprueba la explicación.</li>
-            <li>Explícalo con tus palabras.</li>
-          </ol>
-        </div>
-      </section>
-      <section class="feature-grid">
-        <article class="feature-card"><span>01</span><h3>Flashcards SM-2</h3><p>El vocabulario que cuesta más vuelve antes.</p></article>
-        <article class="feature-card"><span>02</span><h3>Quiz bilingüe</h3><p>Respuesta, explicación y verificación de comprensión.</p></article>
-        <article class="feature-card"><span>03</span><h3>Audio en inglés</h3><p>Pronunciación canadiense mediante Web Speech API.</p></article>
-        <article class="feature-card"><span>04</span><h3>Progreso local</h3><p>Todo queda guardado en este dispositivo.</p></article>
-      </section>
-    `;
-    root.querySelectorAll('[data-go]').forEach((button) => button.addEventListener('click', () => activateTab(button.dataset.go)));
-  }
-
-  function renderGuides() {
-    const root = document.querySelector('#guides-root');
-    root.innerHTML = `
-      <div class="section-heading"><div><p class="eyebrow">RUTA DE ESTUDIO</p><h2>Guías bilingües</h2></div></div>
-      <div class="guide-grid">
-        ${app.data.guides.map((guide) => `
-          <article class="guide-card card">
-            <div class="badge-row"><span class="badge">${escapeHtml(guide.block)}</span></div>
-            <h3>${escapeHtml(guide.title_en)}</h3>
-            <p class="translation">${escapeHtml(guide.title_es)}</p>
-            <div class="bilingual-topics">
-              <div><h4>English</h4><ol>${guide.topics_en.map((topic) => `<li>${escapeHtml(topic)}</li>`).join('')}</ol></div>
-              <div><h4>Español</h4><ol>${guide.topics_es.map((topic) => `<li>${escapeHtml(topic)}</li>`).join('')}</ol></div>
-            </div>
-            <button class="button secondary guide-to-flashcards" data-term-ids="${(guide.term_ids || []).join(',')}">Ir a flashcards relacionadas</button>
-          </article>
-        `).join('')}
-      </div>
-    `;
-    root.querySelectorAll('.guide-to-flashcards').forEach((button) => {
-      button.addEventListener('click', () => {
-        activateTab('flashcards');
-        const ids = button.dataset.termIds.split(',').filter(Boolean);
-        if (ids.length) app.flashcards?.focusTerm(Number(ids[0]));
-      });
-    });
-  }
-
-  function renderProgress() {
-    const root = document.querySelector('#progress-root');
-    const stats = window.ProgressStore.getStats();
-    const overall = stats.quiz.answered ? Math.round((stats.quiz.correct / stats.quiz.answered) * 100) : 0;
-    const blocks = Object.entries(stats.quiz.byBlock);
-
-    root.innerHTML = `
-      <div class="section-heading">
-        <div><p class="eyebrow">DATOS LOCALES</p><h2>Panel de progreso</h2></div>
-        <button class="button ghost" id="reset-progress">Reiniciar progreso</button>
-      </div>
-      <div class="stat-grid">
-        <article class="stat-card"><span>Preguntas</span><strong>${stats.quiz.answered}</strong></article>
-        <article class="stat-card"><span>Acierto total</span><strong>${overall}%</strong></article>
-        <article class="stat-card"><span>Racha diaria</span><strong>${stats.streak}</strong><small>días</small></article>
-        <article class="stat-card"><span>Términos dominados</span><strong>${stats.mastered}</strong></article>
-      </div>
-      <article class="card chart-card">
-        <h3>Aciertos por bloque</h3>
-        ${blocks.length ? blocks.map(([block, value]) => {
-          const pct = value.answered ? Math.round((value.correct / value.answered) * 100) : 0;
-          return `<div class="bar-row"><div class="bar-label"><span>${escapeHtml(block)}</span><strong>${pct}%</strong></div><div class="bar-track"><div class="bar-value" style="width:${pct}%"></div></div></div>`;
-        }).join('') : '<div class="empty-state">Responde preguntas para generar estadísticas por bloque.</div>'}
-      </article>
-      <article class="card local-note"><strong>Privacidad:</strong> el progreso se almacena únicamente en <code>localStorage</code> del navegador actual.</article>
-    `;
-    root.querySelector('#reset-progress').addEventListener('click', () => {
-      if (!confirm('¿Borrar todo el progreso?')) return;
-      window.ProgressStore.reset();
-      app.flashcards?.renderCard();
-      renderProgress();
-    });
-  }
-
-  function registerServiceWorker() {
-    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-      navigator.serviceWorker.register('./service-worker.js').catch((error) => console.warn('Service worker no disponible:', error));
-    }
-  }
-
-  function escapeHtml(value) {
-    return String(value)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
-  }
-
-  document.addEventListener('DOMContentLoaded', init);
+/* Main application controller. */
+(function(){
+'use strict';
+const app={data:null,english:null,quiz:null,tab:'home'};
+async function load(path){const r=await fetch(path,{cache:'no-store'});if(!r.ok)throw new Error(`${path}: HTTP ${r.status}`);return r.json()}
+async function loadMany(paths){return (await Promise.all(paths.map(load))).flat()}
+const DATA_PARTS={terms:["data/terms-1.json", "data/terms-2.json", "data/terms-3.json", "data/terms-4.json", "data/terms-5.json", "data/terms-6.json"],questions:["data/questions-1.json", "data/questions-2.json", "data/questions-3.json", "data/questions-4.json", "data/questions-5.json", "data/questions-6.json", "data/questions-7.json", "data/questions-8.json"],guides:["data/study_guides-1.json", "data/study_guides-2.json", "data/study_guides-3.json"]};
+async function boot(){try{app.data={rsos:await load('data/rsos.json'),terms:await loadMany(DATA_PARTS.terms),questions:await loadMany(DATA_PARTS.questions),guides:await loadMany(DATA_PARTS.guides),sources:await load('data/sources.json')}}catch(e){document.body.innerHTML=`<main class="fatal"><h1>Unable to load study data</h1><p>${esc(e.message)}</p><p>Open the app through GitHub Pages or a local HTTP server.</p></main>`;return}bindNav();if(!window.ProfileStore.active())showOnboarding();else startProfile();registerSW()}
+function startProfile(){renderProfileControls();applySpanish();renderHome();renderRsos();renderCalendar();renderProgress();app.english=new window.EnglishController(document.querySelector('#english-root'),app.data.terms,refresh);app.quiz=new window.QuizController(document.querySelector('#quiz-root'),app.data.questions,app.data.rsos,app.data.sources,refresh)}
+function refresh(){renderHome();renderProgress();renderCalendar();renderProfileControls();applySpanish()}
+function showOnboarding(){const modal=document.querySelector('#profile-modal');modal.classList.add('open');modal.innerHTML=`<div class="modal-card"><p class="eyebrow">LOCAL STUDY PROFILE</p><h2>Create your study user</h2><p>No email or personal account is required. Progress is stored only in this browser/device.</p><label class="field">Study name<input id="new-profile-name" maxlength="32" placeholder="e.g. Hector"></label><label class="field">Study start date<input type="date" id="new-profile-date" value="${window.ProfileStore.today()}"></label><button class="button primary" id="create-profile">Start 180-day plan</button></div>`;modal.querySelector('#create-profile').onclick=()=>{try{window.ProfileStore.create(modal.querySelector('#new-profile-name').value,modal.querySelector('#new-profile-date').value);modal.classList.remove('open');modal.innerHTML='';startProfile()}catch(e){alert(e.message)}}}
+function renderProfileControls(){const p=window.ProfileStore.active(),list=window.ProfileStore.list(),root=document.querySelector('#profile-controls');if(!p)return;root.innerHTML=`<button class="profile-button" id="profile-menu">👤 ${esc(p.name)} <small>Day ${window.StudyCalendar.currentDay(p)}/180</small></button><div class="profile-popover" id="profile-popover"><strong>Study profiles</strong>${list.map(x=>`<button data-profile="${x.id}" class="profile-option ${x.id===p.id?'active':''}">${esc(x.name)}<small>${x.startDate}</small></button>`).join('')}<button class="button secondary" id="add-profile">+ Add user</button></div>`;const pop=root.querySelector('#profile-popover');root.querySelector('#profile-menu').onclick=()=>pop.classList.toggle('show');root.querySelectorAll('[data-profile]').forEach(b=>b.onclick=()=>{window.ProfileStore.setActive(b.dataset.profile);location.reload()});root.querySelector('#add-profile').onclick=()=>showOnboarding()}
+function bindNav(){document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>activate(b.dataset.tab));document.querySelector('#spanish-toggle').onchange=e=>{window.ProgressStore.setSetting('showSpanish',e.target.checked);applySpanish()}}
+function activate(tab){app.tab=tab;document.querySelectorAll('.tab-button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id===`tab-${tab}`));window.scrollTo({top:0,behavior:'smooth'})}
+function applySpanish(){const show=window.ProgressStore.getSetting('showSpanish',true);document.body.classList.toggle('hide-spanish',!show);const t=document.querySelector('#spanish-toggle');if(t)t.checked=show}
+function renderHome(){const p=window.ProfileStore.active();if(!p)return;const s=window.ProgressStore.stats(),day=window.StudyCalendar.currentDay(p),plan=window.StudyCalendar.planForDay(p,s,app.data.rsos,day),pct=s.quiz.answered?Math.round(s.quiz.correct/s.quiz.answered*100):0,last=s.quiz.examAttempts.at(-1);document.querySelector('#home-root').innerHTML=`<section class="hero"><div><p class="eyebrow">INDUSTRIAL ELECTRICIAN · CANADA · RED SEAL</p><h1>Study to <span>pass the Red Seal exam.</span></h1><p class="hero-copy">A 180-day plan built around the official Industrial Electrician RSOS, official Task weightings, technical English, source-grounded practice and 100-question English-only mock exams.</p><div class="hero-actions"><button class="button primary" data-go="calendar">Today’s study plan</button><button class="button secondary" data-go="english">Technical English</button><button class="button secondary" data-go="quiz">Practice questions</button></div></div><aside class="hero-panel"><p class="eyebrow">OFFICIAL EXAM TARGET</p><div class="exam-facts"><div><b>100</b><span>questions</span></div><div><b>4 h</b><span>writing time</span></div><div><b>70%</b><span>pass mark</span></div></div><p>Question types: Knowledge/Recall 10–20%, Procedural/Application 35–45%, Critical Thinking 40–50%.</p></aside></section>
+ <div class="stat-grid"><div class="stat-card"><span>Day</span><strong>${day}<small>/180</small></strong></div><div class="stat-card"><span>Practice accuracy</span><strong>${pct}<small>%</small></strong></div><div class="stat-card"><span>Vocabulary mastered</span><strong>${s.mastered}<small>/${app.data.terms.length}</small></strong></div><div class="stat-card"><span>Study streak</span><strong>${s.streak}<small>days</small></strong></div></div>
+ <article class="card today-plan home-today"><div><span class="badge">TODAY · ${esc(plan.phase)}</span><h3>${esc(plan.title)}</h3><p>${esc(plan.desc)}</p><div class="plan-metrics"><span>⏱ ${plan.minutes} min</span><span>🔤 ${plan.vocab} vocab</span><span>📝 ${plan.questions} questions</span></div></div><button class="button primary" data-go="calendar">Open day</button></article>
+ <div class="dashboard-grid"><article class="card dashboard-card"><h3>180-day readiness goal</h3><p><b>Internal target: ≥80% on 3 consecutive full mocks</b></p><p>The official pass mark is 70%; the higher study target creates margin before the real exam.</p></article><article class="card dashboard-card"><h3>Official scope</h3><p><b>6 MWA · 31 Tasks · 112 Sub-tasks</b></p><p>The full curriculum navigator mirrors the official Industrial Electrician task matrix.</p><button class="text-button" data-go="rsos">Open RSOS curriculum →</button></article><article class="card dashboard-card"><h3>Last full mock</h3>${last?`<p><b>${last.pct}%</b> · ${last.passed?'PASS':'below target'}</p><p>${new Date(last.at).toLocaleDateString()}</p>`:'<p>No 100-question mock completed yet.</p>'}<button class="text-button" data-go="quiz">Open exam mode →</button></article><article class="card dashboard-card"><h3>Important</h3><p>This app prepares you for the exam; it does not grant Red Seal certification. Eligibility and certification are administered by Canadian provincial/territorial apprenticeship authorities.</p></article></div>`;document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>activate(b.dataset.go))}
+function renderCalendar(){window.StudyCalendar.render(document.querySelector('#calendar-root'),app.data.rsos,refresh)}
+function renderRsos(){
+ const root=document.querySelector('#rsos-root'),guideMap=new Map(app.data.guides.map(g=>[g.task,g]));
+ root.innerHTML=`<div class="section-heading"><div><p class="eyebrow">OFFICIAL CURRICULUM + STUDY GUIDE</p><h2>Industrial Electrician RSOS</h2></div><a class="button secondary" href="${app.data.sources['rsos-pdf']?.url||app.data.sources.rsos.url}" target="_blank" rel="noopener">Official RSOS ↗</a></div><p class="section-intro">This is the study spine: 6 Major Work Activities, 31 Tasks and 112 Sub-tasks. The exam blueprint is tracked at Task level; study coverage is tracked down to Sub-task.</p><div class="mwa-stack">${app.data.rsos.mwas.map(m=>`<details class="card mwa-card" ${m.id==='D'||m.id==='F'?'open':''}><summary><div><span class="mwa-letter">${m.id}</span><div><h3>${esc(m.title_en)}</h3><p>${m.weight}% · ${m.tasks.reduce((n,t)=>n+t.exam_questions,0)} exam questions</p></div></div></summary><div class="task-list">${m.tasks.map(t=>{const g=guideMap.get(t.id);return `<article class="task-item"><div class="task-head"><b>${t.id}</b><h4>${esc(t.title_en)}</h4><span>${t.exam_questions} q</span></div><div class="subtask-list">${t.subtasks.map(s=>`<span class="subtask-chip">${esc(s.id)} · ${esc(s.title_en)}</span>`).join('')}</div>${g?`<details class="task-guide"><summary>Study focus for ${t.id}</summary><div class="guide-body"><p><strong>What to master</strong></p><ul>${(g.focus_en||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul><p class="microcopy">Study the RSOS performance criteria, learning outcomes and range of variables. Where the RSOS refers to CEC/code requirements, verify the requirement in the current codebook rather than memorizing an unsupported value from this app.</p></div></details>`:''}</article>`}).join('')}</div></details>`).join('')}</div>`}
+function renderProgress(){const root=document.querySelector('#progress-root'),s=window.ProgressStore.stats();const total=s.quiz.answered,pct=total?Math.round(s.quiz.correct/total*100):0;const taskRows=app.data.rsos.mwas.flatMap(m=>m.tasks.map(t=>{const v=s.quiz.byTask[t.id]||{answered:0,correct:0};return{...t,mwa:m.id,answered:v.answered,pct:v.answered?Math.round(v.correct/v.answered*100):0}})).filter(x=>x.answered).sort((a,b)=>a.pct-b.pct);root.innerHTML=`<div class="section-heading"><div><p class="eyebrow">PERSONAL PROGRESS</p><h2>${esc(window.ProfileStore.active().name)}’s study record</h2></div><span class="badge">Local to this browser</span></div><div class="stat-grid"><div class="stat-card"><span>Questions answered</span><strong>${total}</strong></div><div class="stat-card"><span>Accuracy</span><strong>${pct}<small>%</small></strong></div><div class="stat-card"><span>Mastered vocabulary</span><strong>${s.mastered}</strong></div><div class="stat-card"><span>Completed study days</span><strong>${s.calendar.completedDays.length}<small>/180</small></strong></div></div><article class="card chart-card"><h3>Task performance</h3>${taskRows.length?taskRows.map(x=>`<div class="bar-row"><div class="bar-label"><b>${x.id}</b><span>${x.pct}% · ${x.answered} answers</span></div><div class="bar-track"><div class="bar-value" style="width:${x.pct}%"></div></div></div>`).join(''):'<div class="empty-state">Answer practice questions to build Task-level diagnostics.</div>'}</article>`}
+function registerSW(){if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./service-worker.js').catch(console.warn)}
+function esc(v){return String(v??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;')}
+document.addEventListener('DOMContentLoaded',boot);
 })();
