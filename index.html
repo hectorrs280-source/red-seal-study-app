@@ -1,1 +1,47 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#071016"><title>Red Seal Industrial Electrician Study</title><link rel="manifest" href="manifest.json"><link rel="icon" href="assets/icon.svg"><link rel="stylesheet" href="css/styles.css"><link rel="stylesheet" href="css/v2.css"><script defer src="js/users.js"></script><script defer src="js/speech.js"></script><script defer src="js/progress.js"></script><script defer src="js/plan.js"></script><script defer src="js/english.js"></script><script defer src="js/quiz-core.js"></script><script defer src="js/quiz-ui.js"></script><script defer src="js/app.js"></script></head><body><div class="app-shell"><header class="topbar"><div class="brand"><span class="brand-mark">⚡</span><span><strong>RED SEAL STUDY</strong><small>Industrial Electrician · Canada</small></span></div><nav class="tab-nav"><button class="tab-button active" data-tab="home">Dashboard</button><button class="tab-button" data-tab="calendar">180-Day Plan</button><button class="tab-button" data-tab="english">English</button><button class="tab-button" data-tab="rsos">RSOS</button><button class="tab-button" data-tab="quiz">Quiz</button><button class="tab-button" data-tab="progress">Progress</button></nav><div class="header-actions"><label class="switch"><input type="checkbox" id="spanish-toggle" checked><span>ES help</span></label><div id="profile-controls"></div></div></header><main><section class="tab-panel active" id="tab-home"><div id="home-root"></div></section><section class="tab-panel" id="tab-calendar"><div id="calendar-root"></div></section><section class="tab-panel" id="tab-english"><div id="english-root"></div></section><section class="tab-panel" id="tab-rsos"><div id="rsos-root"></div></section><section class="tab-panel" id="tab-quiz"><div id="quiz-root"></div></section><section class="tab-panel" id="tab-progress"><div id="progress-root"></div></section></main><footer class="footer">Independent Industrial Electrician Red Seal study tool.</footer></div><div class="modal" id="profile-modal"></div></body></html>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071016">
+  <meta name="description" content="Aplicación bilingüe de estudio para Red Seal Industrial Electrician.">
+  <title>Red Seal Industrial Electrician Study App</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="js/speech.js"></script>
+  <script defer src="js/progress.js"></script>
+  <script defer src="js/flashcards.js"></script>
+  <script defer src="js/quiz.js"></script>
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand" aria-label="Red Seal Study">
+        <span class="brand-mark">⚡</span>
+        <span><strong>RED SEAL STUDY</strong><small>Industrial Electrician · EN / ES</small></span>
+      </div>
+      <nav class="tab-nav" aria-label="Navegación principal">
+        <button class="tab-button active" data-tab="home">Inicio</button>
+        <button class="tab-button" data-tab="flashcards">Flashcards</button>
+        <button class="tab-button" data-tab="quiz">Quiz</button>
+        <button class="tab-button" data-tab="guides">Guías</button>
+        <button class="tab-button" data-tab="progress">Progreso</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="tab-panel active" id="tab-home" aria-label="Inicio"><div id="home-root"></div></section>
+      <section class="tab-panel" id="tab-flashcards" aria-label="Flashcards"><div id="flashcards-root"></div></section>
+      <section class="tab-panel" id="tab-quiz" aria-label="Quiz"><div id="quiz-root"></div></section>
+      <section class="tab-panel" id="tab-guides" aria-label="Guías"><div id="guides-root"></div></section>
+      <section class="tab-panel" id="tab-progress" aria-label="Progreso"><div id="progress-root"></div></section>
+    </main>
+
+    <footer class="footer">
+      <strong>Red Seal Industrial Electrician Study App</strong> · Aplicación educativa sin dependencias externas. Los requisitos normativos deben contrastarse con la edición vigente de la norma aplicable.
+    </footer>
+  </div>
+</body>
+</html>
